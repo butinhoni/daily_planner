@@ -1,15 +1,20 @@
 import psycopg2
 import pandas as pd
+import segredos
 
-host_server = '10.147.20.66'
+host_server = segredos.host
+user = segredos.user
+senha = segredos.password
+port = segredos.port
+database = segredos.db
 
 
 def read_subtipos():
-    conn = psycopg2.connect(database = 'prog_diario',
-            user = 'postgres',
+    conn = psycopg2.connect(database = database,
+            user = user,
             host = host_server,
-            password = '051296',
-            port = 5432)
+            password = senha,
+            port = port)
 
     cur = conn.cursor()
     cur.execute('SELECT * FROM public.subtipos')
@@ -22,11 +27,11 @@ def read_subtipos():
     return(df)
 
 def read_tarefas():
-    conn = psycopg2.connect(database = 'prog_diario',
-                user = 'postgres',
+    conn = psycopg2.connect(database = database,
+                user = user,
                 host = host_server,
-                password = '051296',
-                port = 5432)
+                password = senha,
+                port = port)
 
     cur = conn.cursor()
     cur.execute('SELECT * FROM public.tarefas')
@@ -38,11 +43,11 @@ def read_tarefas():
     return(df)
 
 def read_tarefas_check():
-    conn = psycopg2.connect(database = 'prog_diario',
-            user = 'postgres',
+    conn = psycopg2.connect(database = database,
+            user = user,
             host = host_server,
-            password = '051296',
-            port = 5432)
+            password = senha,
+            port = port)
 
     cur = conn.cursor()
     cur.execute('SELECT * FROM public.diario_check')
@@ -54,11 +59,11 @@ def read_tarefas_check():
     return(df)    
 
 def read_frases():
-    conn = psycopg2.connect(database = 'prog_diario',
-        user = 'postgres',
+    conn = psycopg2.connect(database = database,
+        user = user,
         host = host_server,
-        password = '051296',
-        port = 5432)
+        password = senha,
+        port = port)
 
     cur = conn.cursor()
     cur.execute('SELECT * FROM public.motivacionais')
@@ -70,11 +75,11 @@ def read_frases():
     return(df)
 
 def read_morning_mood():
-    conn = psycopg2.connect(database = 'prog_diario',
-        user = 'postgres',
+    conn = psycopg2.connect(database = database,
+        user = user,
         host = host_server,
-        password = '051296',
-        port = 5432)
+        password = senha,
+        port = port)
 
     cur = conn.cursor()
     cur.execute('SELECT * FROM public.morning_mood')
@@ -86,11 +91,11 @@ def read_morning_mood():
     return(df)
 
 def insert_subtipo(sub):
-    conn = psycopg2.connect(database = 'prog_diario',
-            user = 'postgres',
+    conn = psycopg2.connect(database = database,
+            user = user,
             host = host_server,
-            password = '051296',
-            port = 5432)
+            password = senha,
+            port = port)
     cur = conn.cursor()
     cur.execute(f"INSERT INTO public.subtipos(subtipo) VALUES ('{sub}')");
     cur.close()
@@ -98,11 +103,11 @@ def insert_subtipo(sub):
     conn.close()
 
 def insert_tarefa(name,freq,tipo,subtipo,dias):
-    conn = psycopg2.connect(database = 'prog_diario',
-        user = 'postgres',
+    conn = psycopg2.connect(database = database,
+        user = user,
         host = host_server,
-        password = '051296',
-        port = 5432)
+        password = senha,
+        port = port)
     cur = conn.cursor()
     #for d in data:
         #query = cur.mogrify("INSERT INTO public.tarefas(tarefa, frequencia, tipo, subtipo, dias) VALUES (%s, %s, %s, %s, %s)", d)
@@ -112,11 +117,11 @@ def insert_tarefa(name,freq,tipo,subtipo,dias):
     conn.close()
 
 def insert_diario_check(dia, tarefa, rotina):
-    conn = psycopg2.connect(database = 'prog_diario',
-        user = 'postgres',
+    conn = psycopg2.connect(database = database,
+        user = user,
         host = host_server,
-        password = '051296',
-        port = 5432)
+        password = senha,
+        port = port)
     cur = conn.cursor()
     cur.execute(f"INSERT INTO public.diario_check(data, tarefa, feita, rotina) VALUES ('{dia}','{tarefa}','False', '{rotina}')")
     cur.close()
@@ -124,11 +129,11 @@ def insert_diario_check(dia, tarefa, rotina):
     conn.close()
 
 def insert_morning_mood(dia,mood):
-    conn = psycopg2.connect(database = 'prog_diario',
-        user = 'postgres',
+    conn = psycopg2.connect(database = database,
+        user = user,
         host = host_server,
-        password = '051296',
-        port = 5432)
+        password = senha,
+        port = port)
     cur = conn.cursor()
     cur.execute(f"INSERT INTO public.morning_mood(data, mood) VALUES ('{dia}','{mood}')")
     cur.close()
@@ -136,11 +141,11 @@ def insert_morning_mood(dia,mood):
     conn.close()
 
 def tarefa_done(dia, tarefa):
-    conn = psycopg2.connect(database = 'prog_diario',
-        user = 'postgres',
+    conn = psycopg2.connect(database = database,
+        user = user,
         host = host_server,
-        password = '051296',
-        port = 5432)
+        password = senha,
+        port = port)
     cur = conn.cursor() 
     cur.execute(f"""UPDATE public.diario_check
                 SET feita = True
@@ -150,11 +155,11 @@ def tarefa_done(dia, tarefa):
     conn.close()
 
 def end_day(dia, humor):
-    conn = psycopg2.connect(database = 'prog_diario',
-        user = 'postgres',
+    conn = psycopg2.connect(database = database,
+        user = user,
         host = host_server,
-        password = '051296',
-        port = 5432)
+        password = senha,
+        port = port)
     cur = conn.cursor() 
     cur.execute(f"""UPDATE public.morning_mood 
                 SET "end" = 'true' 
@@ -167,11 +172,11 @@ def end_day(dia, humor):
     conn.close()
 
 def reflex(dia, msg):
-    conn = psycopg2.connect(database = 'prog_diario',
-        user = 'postgres',
+    conn = psycopg2.connect(database = database,
+        user = user,
         host = host_server,
-        password = '051296',
-        port = 5432)
+        password = senha,
+        port = port)
     cur = conn.cursor()
     cur.execute(f"""UPDATE public.morning_mood
                 SET "reflexao" = '{msg}'
