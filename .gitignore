@@ -161,3 +161,6 @@ cython_debug/
 est_tabelas.txt
 mapa.txt
 segredos.py
+pkmn/gengar.jpg
+pkmn/gengar.png
+pkmn/treecko.png

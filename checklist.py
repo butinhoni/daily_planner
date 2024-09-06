@@ -5,6 +5,11 @@ import random
 import os
 
 
+st.set_page_config('Acompanhamento Diário',layout='wide', page_icon='icon/coringao.png')
+top1, top2, top3, top4, top5 = st.columns(5)
+top1.image('pkmn/gengar2.png')
+top2.image('pkmn/treecko2.png')
+
 dict_weekdays = {
     0: 'Segunda',
     1: 'Terça',
@@ -86,19 +91,22 @@ if not day_started:
         botão = st.button(mood,key = f'botao{mood}')
         if botão:
             funcoes.insert_morning_mood(today,mood)
+            st.rerun()
             for i, row in tarefas_dia.iterrows():
                 tarefa = row['tarefa']
                 rotina = row['subtipo']
                 funcoes.insert_diario_check(today, tarefa, rotina)
 
 #antes de continar com a parte visual vamos fazer as contas das porcentagens e de quantas tarefas já foram feitas ou não
-n_tarefas_feitas = check_dia['feita'].to_list().count(bool(True))
-n_tarefas_nfeitas = check_dia['feita'].to_list().count(bool(False))
-n_tarefas_dia = n_tarefas_nfeitas + n_tarefas_feitas
-percent_dia = n_tarefas_feitas/n_tarefas_dia
+if day_started:
+    n_tarefas_feitas = check_dia['feita'].to_list().count(bool(True))
+    n_tarefas_nfeitas = check_dia['feita'].to_list().count(bool(False))
+    n_tarefas_dia = n_tarefas_nfeitas + n_tarefas_feitas
+    percent_dia = n_tarefas_feitas/n_tarefas_dia
 
 #progresso geral do dia
 if day_started and not day_end:
+    st.header('Progresso Geral')
     cont_geral = st.container(border=True)
     cont_geral.markdown("Progresso Geral do Dia")
     cont_geral.text(f"{n_tarefas_feitas}/{n_tarefas_dia} Tarefas concluidas | {percent_dia*100:.2f}% Concluído" )
@@ -113,32 +121,34 @@ if day_started and not day_end:
 
 
 #progresso por rotina (gostei dessa ideia)
+st.header("Progressos das rotinas")
 if day_started and not day_end:
     for rotina in rotinas['subtipo'].to_list():
-        exp = st.expander(rotina)
         df = tarefas_dia[tarefas_dia['subtipo'] == rotina]
         df2 = check_dia[check_dia['rotina'] == rotina]
-        n_rotina_feitas = df2['feita'].to_list().count(bool(True))
-        n_rotina_nfeitas = df2['feita'].to_list().count(bool(False))
-        n_rotina_total = n_rotina_feitas + n_rotina_nfeitas
-        percent_rotina = n_rotina_feitas/n_rotina_total
-        exp.text(f'{n_rotina_feitas}/{n_rotina_total} | {percent_rotina*100:.2f}% Concluída')
-        exp.progress(percent_rotina)
-        for i, row in df.iterrows():
-            tarefa_atual = row['tarefa']
-            contTar = exp.container(border=True)
-            col1, col2 = contTar.columns(2)
-            col1.text(tarefa_atual)
-            if check_dia.loc[check_dia['tarefa'] == tarefa_atual]['feita'].iloc[0]:
-                col2.markdown(':blue[Feito]')
-            else:
-                botao2 = col2.button('Concluir', key=f'button{tarefa_atual}',type='primary')
-            try:
-                if botao2:
-                    funcoes.tarefa_done(today,tarefa_atual)
-                    st.rerun()
-            except:
-                pass
+        if rotina in df2['rotina'].to_list():
+            exp = st.expander(rotina)
+            n_rotina_feitas = df2['feita'].to_list().count(bool(True))
+            n_rotina_nfeitas = df2['feita'].to_list().count(bool(False))
+            n_rotina_total = n_rotina_feitas + n_rotina_nfeitas
+            percent_rotina = n_rotina_feitas/n_rotina_total
+            exp.text(f'{n_rotina_feitas}/{n_rotina_total} | {percent_rotina*100:.2f}% Concluída')
+            exp.progress(percent_rotina)
+            for i, row in df2.iterrows():
+                tarefa_atual = row['tarefa']
+                contTar = exp.container(border=True)
+                col1, col2 = contTar.columns(2)
+                col1.text(tarefa_atual)
+                if check_dia.loc[check_dia['tarefa'] == tarefa_atual]['feita'].iloc[0]:
+                    col2.markdown(':blue[Feito]')
+                else:
+                    botao2 = col2.button('Concluir', key=f'button{tarefa_atual}',type='primary')
+                try:
+                    if botao2:
+                        funcoes.tarefa_done(today,tarefa_atual)
+                        st.rerun()
+                except:
+                    pass
 
 
 
@@ -162,5 +172,5 @@ if day_end:
     reflex = st.text_area('Reflexão')
     fim = st.button('Encerrar o dia', type='primary')
     if fim:
-        reflex(today, reflex)
+        funcoes.reflex(today, reflex)
 
