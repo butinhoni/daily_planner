@@ -91,11 +91,11 @@ if not day_started:
         botão = st.button(mood,key = f'botao{mood}')
         if botão:
             funcoes.insert_morning_mood(today,mood)
-            st.rerun()
             for i, row in tarefas_dia.iterrows():
                 tarefa = row['tarefa']
                 rotina = row['subtipo']
                 funcoes.insert_diario_check(today, tarefa, rotina)
+                st.rerun()
 
 #antes de continar com a parte visual vamos fazer as contas das porcentagens e de quantas tarefas já foram feitas ou não
 if day_started:
@@ -153,7 +153,7 @@ if day_started and not day_end:
 
 
 #tela de encerrar o dia
-if day_end:
+if day_end and day_started:
     imagem = random.choice(imagens)
     imagem = os.path.join('imagens',imagem)
     frase = random.choice(frases['frase'].to_list())
