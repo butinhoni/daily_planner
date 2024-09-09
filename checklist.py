@@ -96,6 +96,7 @@ if not day_started:
                 rotina = row['subtipo']
                 funcoes.insert_diario_check(today, tarefa, rotina)
                 st.rerun()
+    st.stop()
 
 #antes de continar com a parte visual vamos fazer as contas das porcentagens e de quantas tarefas já foram feitas ou não
 if day_started:
